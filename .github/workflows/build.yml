@@ -36,6 +36,18 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Patch identifier class name for Minecraft 1.21.11
+        shell: bash
+        run: |
+          source_file="$(find unpacked -path '*/src/main/java/*/RawMetalProgression.java' -print -quit)"
+          if [ -z "$source_file" ]; then
+            echo "Main mod source file not found."
+            exit 1
+          fi
+          sed -i 's/ResourceLocation/Identifier/g; s/net.minecraft.resources.Identifier/net.minecraft.resources.Identifier/' "$source_file"
+          sed -i 's/import net.minecraft.resources.Identifier;/import net.minecraft.resources.Identifier;/' "$source_file"
+          grep -n 'Identifier' "$source_file"
+
       - name: Build mod
         shell: bash
         run: |

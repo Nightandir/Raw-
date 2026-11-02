@@ -48,19 +48,23 @@ jobs:
           sed -i 's/import net.minecraft.resources.Identifier;/import net.minecraft.resources.Identifier;/' "$source_file"
           grep -n 'Identifier' "$source_file"
 
-      - name: Replace raw nugget textures
+      - name: Install updated textures and 1.21.11 recipes
         shell: bash
         run: |
           resource_dir="$(find unpacked -type d -path '*/src/main/resources/assets/rawmetal/textures/item' -print -quit)"
-          if [ -z "$resource_dir" ]; then
-            echo "Raw Metal Progression item texture directory not found."
+          recipe_dir="$(find unpacked -type d -path '*/src/main/resources/data/rawmetal/recipe' -print -quit)"
+          if [ -z "$resource_dir" ] || [ -z "$recipe_dir" ]; then
+            echo "Raw Metal Progression resource directories not found."
             exit 1
           fi
           install -m 644 textures/raw_iron_nugget.png "$resource_dir/raw_iron_nugget.png"
           install -m 644 textures/raw_gold_nugget.png "$resource_dir/raw_gold_nugget.png"
           install -m 644 textures/raw_copper_nugget.png "$resource_dir/raw_copper_nugget.png"
-          echo "Installed raw nugget textures:"
-          ls -l "$resource_dir"/raw_*_nugget.png
+          for recipe in recipes/*.json; do
+            install -m 644 "$recipe" "$recipe_dir/$(basename "$recipe")"
+          done
+          echo "Installed three textures and nine corrected recipes."
+          ls -l "$recipe_dir"
 
       - name: Build mod
         shell: bash

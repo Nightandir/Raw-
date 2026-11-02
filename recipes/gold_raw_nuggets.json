@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "rawmetal:raw_gold_chunk"
+  ],
+  "result": {
+    "id": "rawmetal:raw_gold_nugget",
+    "count": 9
+  }
+}

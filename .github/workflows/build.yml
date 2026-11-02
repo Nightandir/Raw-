@@ -48,6 +48,20 @@ jobs:
           sed -i 's/import net.minecraft.resources.Identifier;/import net.minecraft.resources.Identifier;/' "$source_file"
           grep -n 'Identifier' "$source_file"
 
+      - name: Replace raw nugget textures
+        shell: bash
+        run: |
+          resource_dir="$(find unpacked -type d -path '*/src/main/resources/assets/rawmetal/textures/item' -print -quit)"
+          if [ -z "$resource_dir" ]; then
+            echo "Raw Metal Progression item texture directory not found."
+            exit 1
+          fi
+          install -m 644 textures/raw_iron_nugget.png "$resource_dir/raw_iron_nugget.png"
+          install -m 644 textures/raw_gold_nugget.png "$resource_dir/raw_gold_nugget.png"
+          install -m 644 textures/raw_copper_nugget.png "$resource_dir/raw_copper_nugget.png"
+          echo "Installed raw nugget textures:"
+          ls -l "$resource_dir"/raw_*_nugget.png
+
       - name: Build mod
         shell: bash
         run: |
